@@ -1,0 +1,1452 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3eb">
+  <meta name="description" content="ALLDOWN — downloader all-in-one untuk link media yang didukung.">
+  <title>ALLDOWN — Media Downloader</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f5f3eb;
+      --paper: #fffef9;
+      --ink: #20201d;
+      --muted: #77766d;
+      --line: #252520;
+      --lime: #d8f36a;
+      --blue: #c5dcff;
+      --pink: #ffd5df;
+      --green: #d9f5d0;
+      --red: #ffe0dc;
+      --shadow: 4px 4px 0 var(--line);
+      --border: 2px solid var(--line);
+      --radius: 15px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(#d8d5c9 0.7px, transparent 0.7px),
+        var(--bg);
+      background-size: 15px 15px;
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, a {
+      font: inherit;
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      color: inherit;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 3px solid #627cf4;
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(100% - 32px, 680px);
+      margin-inline: auto;
+    }
+
+    /* HEADER */
+
+    .header {
+      border-bottom: var(--border);
+      background: rgba(255, 254, 249, .93);
+    }
+
+    .header-inner {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      background: var(--lime);
+      border: var(--border);
+      box-shadow: 3px 3px 0 var(--line);
+      border-radius: 10px;
+    }
+
+    .brand-mark svg {
+      width: 21px;
+      height: 21px;
+      stroke-width: 2.5;
+    }
+
+    .brand-name {
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700;
+      font-size: 21px;
+      letter-spacing: -1.1px;
+    }
+
+    .brand-name span {
+      color: #777b36;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #61b54c;
+    }
+
+    /* MAIN */
+
+    main {
+      padding-top: 46px;
+      padding-bottom: 48px;
+    }
+
+    .hero {
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 17px;
+      padding: 7px 10px;
+      border: 1.5px solid var(--line);
+      background: var(--blue);
+      box-shadow: 2px 2px 0 var(--line);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    h1 {
+      max-width: 570px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(38px, 8vw, 61px);
+      font-weight: 700;
+      line-height: 1.03;
+      letter-spacing: -2.9px;
+    }
+
+    h1 .highlight {
+      position: relative;
+      display: inline;
+      z-index: 0;
+      white-space: nowrap;
+    }
+
+    h1 .highlight::after {
+      position: absolute;
+      content: "";
+      left: 0;
+      right: 0;
+      bottom: 2px;
+      height: 13px;
+      background: var(--lime);
+      border: 1px solid var(--line);
+      z-index: -1;
+      transform: rotate(-1deg);
+    }
+
+    .hero-copy {
+      max-width: 430px;
+      margin-top: 17px;
+      color: #64635b;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* INPUT PANEL */
+
+    .download-panel {
+      padding: 23px;
+      background: var(--paper);
+      border: var(--border);
+      border-radius: var(--radius);
+      box-shadow: 6px 6px 0 var(--line);
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+    }
+
+    .panel-title-icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      background: var(--pink);
+      border: 1.5px solid var(--line);
+      border-radius: 9px;
+    }
+
+    .panel-title-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .step {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: stretch;
+      min-height: 54px;
+      border: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      transition: box-shadow .15s;
+    }
+
+    .input-row:focus-within {
+      box-shadow: 3px 3px 0 var(--blue);
+    }
+
+    .input-icon {
+      width: 43px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      color: #77766d;
+    }
+
+    .input-icon svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    #urlInput {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    #urlInput::placeholder {
+      color: #a3a198;
+    }
+
+    .paste-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex-shrink: 0;
+      padding: 0 13px;
+      border: 0;
+      border-left: var(--border);
+      background: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .paste-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .paste-btn:active {
+      background: var(--lime);
+    }
+
+    .primary-btn {
+      display: flex;
+      width: 100%;
+      min-height: 53px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 13px;
+      padding: 13px;
+      border: var(--border);
+      border-radius: 10px;
+      background: var(--lime);
+      box-shadow: 3px 3px 0 var(--line);
+      font-size: 13px;
+      font-weight: 800;
+      transition: transform .12s, box-shadow .12s;
+    }
+
+    .primary-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.5;
+    }
+
+    .primary-btn:active:not(:disabled) {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 var(--line);
+    }
+
+    .primary-btn:disabled {
+      cursor: wait;
+      opacity: .7;
+    }
+
+    .helper-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .helper-row svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* STATUS */
+
+    .status {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .status.show {
+      display: flex;
+    }
+
+    .status svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .status.loading {
+      background: var(--blue);
+    }
+
+    .status.success {
+      background: var(--green);
+    }
+
+    .status.error {
+      background: var(--red);
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* RESULTS */
+
+    .result-section {
+      display: none;
+      margin-top: 36px;
+      animation: enter .25s ease both;
+    }
+
+    .result-section.show {
+      display: block;
+    }
+
+    @keyframes enter {
+      from {
+        opacity: 0;
+        transform: translateY(9px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 23px;
+      font-weight: 700;
+      letter-spacing: -.9px;
+    }
+
+    .result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 9px;
+      border: 1.5px solid var(--line);
+      border-radius: 7px;
+      background: var(--green);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .result-badge svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .media-card {
+      overflow: hidden;
+      border: var(--border);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: 5px 5px 0 var(--line);
+    }
+
+    .media-preview {
+      position: relative;
+      display: grid;
+      place-items: center;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, #e5e1d5, #f8f6ee);
+      border-bottom: var(--border);
+    }
+
+    .media-preview > img {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .media-preview > img.visible {
+      display: block;
+    }
+
+    .preview-placeholder {
+      display: grid;
+      place-items: center;
+      width: 55px;
+      height: 55px;
+      border: var(--border);
+      border-radius: 50%;
+      background: var(--lime);
+    }
+
+    .preview-placeholder svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .platform-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1.5px solid var(--line);
+      border-radius: 7px;
+      background: var(--paper);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .platform-label svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .media-body {
+      padding: 20px;
+    }
+
+    .media-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .media-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 9px;
+      border: 1.5px solid var(--line);
+      border-radius: 7px;
+      background: #f2f0e8;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .meta-chip svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .download-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    .download-heading h3 {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .download-heading span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .download-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .download-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      transition: box-shadow .15s, transform .15s;
+    }
+
+    .file-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--line);
+      border-radius: 9px;
+      background: var(--blue);
+    }
+
+    .file-icon.audio {
+      background: var(--pink);
+    }
+
+    .file-icon svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .file-details {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .file-details strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .file-details p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .file-download {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 39px;
+      padding: 8px 10px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: var(--lime);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 800;
+      transition: transform .12s, box-shadow .12s;
+    }
+
+    .file-download svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .file-download:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    .no-downloads {
+      padding: 18px;
+      border: 1.5px dashed var(--line);
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    /* BOTTOM INFO */
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 35px;
+    }
+
+    .info-card {
+      min-width: 0;
+      padding: 15px 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 11px;
+      background: var(--paper);
+    }
+
+    .info-card:nth-child(1) {
+      box-shadow: 3px 3px 0 var(--pink);
+    }
+
+    .info-card:nth-child(2) {
+      box-shadow: 3px 3px 0 var(--blue);
+    }
+
+    .info-card:nth-child(3) {
+      box-shadow: 3px 3px 0 var(--lime);
+    }
+
+    .info-icon {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      margin-bottom: 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 9px;
+      background: #f2f0e8;
+    }
+
+    .info-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .info-card strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .info-card p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    /* FOOTER */
+
+    .footer {
+      padding: 23px 0 calc(23px + env(safe-area-inset-bottom));
+      border-top: var(--border);
+      background: var(--paper);
+    }
+
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .footer-version {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    @media (min-width: 600px) {
+      main {
+        padding-top: 59px;
+      }
+
+      .download-panel {
+        padding: 27px;
+      }
+
+      .media-body {
+        padding: 24px;
+      }
+
+      .download-option {
+        padding: 14px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .shell {
+        width: calc(100% - 26px);
+      }
+
+      .header-inner {
+        height: 62px;
+      }
+
+      .brand-name {
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 35px;
+        height: 35px;
+      }
+
+      .status-pill {
+        font-size: 9px;
+        padding: 6px 8px;
+      }
+
+      main {
+        padding-top: 34px;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .hero-copy {
+        font-size: 13px;
+      }
+
+      .download-panel {
+        padding: 16px;
+      }
+
+      .panel-title {
+        font-size: 13px;
+      }
+
+      .step {
+        font-size: 9px;
+      }
+
+      .input-icon {
+        width: 35px;
+      }
+
+      #urlInput {
+        font-size: 12px;
+      }
+
+      .paste-btn {
+        padding-inline: 10px;
+      }
+
+      .media-body {
+        padding: 15px;
+      }
+
+      .media-title {
+        font-size: 15px;
+      }
+
+      .file-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .download-option {
+        gap: 9px;
+        padding: 10px;
+      }
+
+      .file-details strong {
+        font-size: 12px;
+      }
+
+      .file-download {
+        padding: 8px;
+        font-size: 9px;
+      }
+
+      .info-grid {
+        gap: 8px;
+      }
+
+      .info-card {
+        padding: 11px 8px;
+      }
+
+      .info-card strong {
+        font-size: 11px;
+      }
+
+      .info-card p {
+        font-size: 9px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="shell header-inner">
+      <a href="#" class="brand" aria-label="ALLDOWN Home">
+        <span class="brand-mark"><i data-lucide="arrow-down-to-line"></i></span>
+        <span class="brand-name">ALLDOWN<span>.</span></span>
+      </a>
+
+      <div class="header-right">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          ALL-IN-ONE
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">
+        <i data-lucide="zap"></i>
+        YOUR MEDIA TOOLKIT
+      </div>
+
+      <h1>
+        Download<br>
+        <span class="highlight">without hassle.</span>
+      </h1>
+
+      <p class="hero-copy">
+        Satu link untuk memulai. Tempel URL media kamu, ambil informasinya,
+        lalu pilih format download yang tersedia.
+      </p>
+    </section>
+
+    <section class="download-panel">
+      <div class="panel-heading">
+        <div class="panel-title">
+          <span class="panel-title-icon"><i data-lucide="link-2"></i></span>
+          Tempel URL media
+        </div>
+        <span class="step">STEP 01 / 02</span>
+      </div>
+
+      <form id="downloadForm">
+        <label class="field-label" for="urlInput">Link video atau audio</label>
+
+        <div class="input-row">
+          <span class="input-icon"><i data-lucide="globe"></i></span>
+          <input
+            id="urlInput"
+            type="url"
+            placeholder="https://www.tiktok.com/..."
+            autocomplete="url"
+            autocapitalize="off"
+            spellcheck="false"
+            required
+          >
+          <button type="button" class="paste-btn" id="pasteBtn">
+            <i data-lucide="clipboard"></i>
+            Paste
+          </button>
+        </div>
+
+        <button class="primary-btn" type="submit" id="submitBtn">
+          <i data-lucide="search"></i>
+          <span>Proses link</span>
+          <i data-lucide="arrow-up-right"></i>
+        </button>
+      </form>
+
+      <div class="helper-row">
+        <i data-lucide="info"></i>
+        <span>Pastikan link dapat diakses. Format yang tersedia bergantung pada platform dan respons API.</span>
+      </div>
+
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="result-section" id="result">
+      <div class="section-heading">
+        <h2>Hasil media<span style="color:#8b8b48">.</span></h2>
+        <span class="result-badge">
+          <i data-lucide="check-circle-2"></i>
+          PROCESSED
+        </span>
+      </div>
+
+      <article class="media-card">
+        <div class="media-preview">
+          <div class="preview-placeholder" id="previewPlaceholder">
+            <i data-lucide="play"></i>
+          </div>
+
+          <img id="thumbnail" alt="Thumbnail media">
+
+          <span class="platform-label">
+            <i data-lucide="layers-3"></i>
+            <span id="platformTag">MEDIA</span>
+          </span>
+        </div>
+
+        <div class="media-body">
+          <h3 class="media-title" id="mediaTitle">Judul media</h3>
+
+          <div class="media-meta">
+            <span class="meta-chip">
+              <i data-lucide="clock-3"></i>
+              <span id="durationTag">Durasi —</span>
+            </span>
+            <span class="meta-chip">
+              <i data-lucide="files"></i>
+              <span id="formatCount">0 format</span>
+            </span>
+          </div>
+
+          <div class="download-heading">
+            <h3>Pilih format</h3>
+            <span>DOWNLOAD OPTIONS</span>
+          </div>
+
+          <div class="download-list" id="downloadList"></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="info-grid">
+      <article class="info-card">
+        <div class="info-icon"><i data-lucide="mouse-pointer-click"></i></div>
+        <strong>Simple</strong>
+        <p>Tempel link dan proses dalam satu langkah.</p>
+      </article>
+
+      <article class="info-card">
+        <div class="info-icon"><i data-lucide="file-down"></i></div>
+        <strong>Multi-format</strong>
+        <p>Pilih file berdasarkan hasil yang tersedia.</p>
+      </article>
+
+      <article class="info-card">
+        <div class="info-icon"><i data-lucide="smartphone"></i></div>
+        <strong>Mobile-first</strong>
+        <p>Layout dirancang nyaman untuk layar HP.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <div class="footer-top">
+        <div class="footer-brand">ALLDOWN.</div>
+        <div class="footer-version">WEB V1.0 · 2026</div>
+      </div>
+
+      <p class="footer-note">
+        ALLDOWN adalah antarmuka downloader pihak ketiga, bukan layanan resmi
+        dari platform media. Unduh hanya konten yang kamu miliki atau yang
+        memang diizinkan untuk diunduh.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const API_ENDPOINT = "https://api-faa.my.id/faa/aio";
+
+    const $ = id => document.getElementById(id);
+
+    const form = $("downloadForm");
+    const urlInput = $("urlInput");
+    const pasteBtn = $("pasteBtn");
+    const submitBtn = $("submitBtn");
+    const statusBox = $("status");
+    const resultBox = $("result");
+    const thumbnail = $("thumbnail");
+    const placeholder = $("previewPlaceholder");
+    const downloadList = $("downloadList");
+
+    let requestSequence = 0;
+
+    function refreshIcons() {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function showStatus(message, type) {
+      const icons = {
+        loading: "loader-circle",
+        success: "check-circle-2",
+        error: "alert-circle"
+      };
+
+      statusBox.className = "status show " + type;
+      statusBox.replaceChildren();
+
+      const icon = document.createElement("i");
+      icon.setAttribute("data-lucide", icons[type] || "info");
+
+      if (type === "loading") icon.classList.add("spinner");
+
+      const text = document.createElement("span");
+      text.textContent = message;
+
+      statusBox.append(icon, text);
+      refreshIcons();
+    }
+
+    function hideStatus() {
+      statusBox.className = "status";
+      statusBox.replaceChildren();
+    }
+
+    function clearResults() {
+      resultBox.classList.remove("show");
+      downloadList.replaceChildren();
+      thumbnail.removeAttribute("src");
+      thumbnail.classList.remove("visible");
+      placeholder.style.display = "grid";
+    }
+
+    function validateUrl(value) {
+      let parsed;
+
+      try {
+        parsed = new URL(value);
+      } catch {
+        throw new Error("URL tidak valid. Masukkan link lengkap.");
+      }
+
+      if (!["https:", "http:"].includes(parsed.protocol)) {
+        throw new Error("URL harus menggunakan HTTP atau HTTPS.");
+      }
+
+      if (!parsed.hostname.includes(".")) {
+        throw new Error("Nama domain tidak valid.");
+      }
+
+      return parsed.href;
+    }
+
+    function safeMediaUrl(value) {
+      if (typeof value !== "string" || !value.trim()) return null;
+
+      try {
+        const parsed = new URL(value);
+
+        if (!["https:", "http:"].includes(parsed.protocol)) {
+          return null;
+        }
+
+        return parsed.href;
+      } catch {
+        return null;
+      }
+    }
+
+    async function requestMedia(userUrl) {
+      const endpoint = new URL(API_ENDPOINT);
+
+      // Input user otomatis masuk ke parameter ?url=
+      endpoint.searchParams.set("url", userUrl);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      try {
+        const response = await fetch(endpoint.toString(), {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          },
+          signal: controller.signal
+        });
+
+        const text = await response.text();
+        let data;
+
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(
+            "Respons API bukan JSON yang valid (HTTP " +
+            response.status + ")."
+          );
+        }
+
+        if (!response.ok || data.status !== true) {
+          throw new Error(
+            data.error || "API gagal memproses link (HTTP " + response.status + ")."
+          );
+        }
+
+        return data;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    function renderMedia(data) {
+      const media = data.result || {};
+
+      $("mediaTitle").textContent =
+        typeof media.title === "string" && media.title.trim()
+          ? media.title
+          : "Judul tidak tersedia";
+
+      $("platformTag").textContent =
+        typeof media.platform === "string" && media.platform.trim()
+          ? media.platform
+          : "MEDIA";
+
+      $("durationTag").textContent =
+        "Durasi " + (media.duration || "—");
+
+      const imageUrl = safeMediaUrl(media.thumbnail);
+
+      if (imageUrl) {
+        thumbnail.onload = () => {
+          thumbnail.classList.add("visible");
+          placeholder.style.display = "none";
+        };
+
+        thumbnail.onerror = () => {
+          thumbnail.classList.remove("visible");
+          placeholder.style.display = "grid";
+        };
+
+        thumbnail.src = imageUrl;
+      }
+
+      const items = Array.isArray(media.downloads)
+        ? media.downloads.filter(item =>
+            item &&
+            typeof item === "object" &&
+            safeMediaUrl(item.url)
+          )
+        : [];
+
+      $("formatCount").textContent = items.length + " format";
+      downloadList.replaceChildren();
+
+      if (items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "no-downloads";
+        empty.textContent =
+          "Tidak ada URL download valid di respons API. Coba link lain.";
+        downloadList.appendChild(empty);
+        resultBox.classList.add("show");
+        refreshIcons();
+        return false;
+      }
+
+      items.forEach(item => {
+        const type = String(item.type || "").toLowerCase();
+        const isAudio = type === "audio";
+        const row = document.createElement("div");
+        row.className = "download-option";
+
+        const iconBox = document.createElement("div");
+        iconBox.className = "file-icon" + (isAudio ? " audio" : "");
+
+        const icon = document.createElement("i");
+        icon.setAttribute(
+          "data-lucide",
+          isAudio ? "file-audio" : "file-video"
+        );
+        iconBox.appendChild(icon);
+
+        const details = document.createElement("div");
+        details.className = "file-details";
+
+        const title = document.createElement("strong");
+        title.textContent = item.label || item.quality || "Media";
+
+        const subtitle = document.createElement("p");
+        subtitle.textContent = [
+          item.quality || "Kualitas tersedia",
+          type ? type.toUpperCase() : "FILE"
+        ].join(" · ");
+
+        details.append(title, subtitle);
+
+        const link = document.createElement("a");
+        link.className = "file-download";
+        link.href = safeMediaUrl(item.url);
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+
+        const downloadIcon = document.createElement("i");
+        downloadIcon.setAttribute("data-lucide", "download");
+
+        const downloadText = document.createElement("span");
+        downloadText.textContent = "Download";
+
+        link.append(downloadIcon, downloadText);
+        row.append(iconBox, details, link);
+        downloadList.appendChild(row);
+      });
+
+      resultBox.classList.add("show");
+      refreshIcons();
+      return true;
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const sequence = ++requestSequence;
+      clearResults();
+      hideStatus();
+
+      let userUrl;
+
+      try {
+        userUrl = validateUrl(urlInput.value.trim());
+      } catch (error) {
+        showStatus(error.message, "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.replaceChildren();
+
+      const spinner = document.createElement("i");
+      spinner.setAttribute("data-lucide", "loader-circle");
+      spinner.classList.add("spinner");
+
+      const loadingText = document.createElement("span");
+      loadingText.textContent = "Memproses link...";
+
+      submitBtn.append(spinner, loadingText);
+      showStatus("Menghubungi API dan mengambil informasi media...", "loading");
+
+      try {
+        const data = await requestMedia(userUrl);
+
+        if (sequence !== requestSequence) return;
+
+        const success = renderMedia(data);
+
+        if (success) {
+          showStatus(
+            "Berhasil! Pilih format media yang ingin kamu unduh.",
+            "success"
+          );
+
+          resultBox.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        } else {
+          showStatus(
+            "API merespons, tetapi tidak menyediakan URL download yang valid.",
+            "error"
+          );
+        }
+      } catch (error) {
+        if (sequence !== requestSequence) return;
+
+        let message = error.message || "Terjadi kesalahan.";
+
+        if (error.name === "AbortError") {
+          message = "Request timeout. Silakan coba lagi.";
+        } else if (
+          error instanceof TypeError ||
+          /failed to fetch|networkerror/i.test(message)
+        ) {
+          message =
+            "Request gagal. Bisa jadi koneksi bermasalah atau browser memblokir API karena CORS. Jika CORS, diperlukan backend proxy.";
+        }
+
+        showStatus(message, "error");
+      } finally {
+        if (sequence === requestSequence) {
+          submitBtn.disabled = false;
+          submitBtn.replaceChildren();
+
+          const icon = document.createElement("i");
+          icon.setAttribute("data-lucide", "search");
+
+          const text = document.createElement("span");
+          text.textContent = "Proses link";
+
+          const arrow = document.createElement("i");
+          arrow.setAttribute("data-lucide", "arrow-up-right");
+
+          submitBtn.append(icon, text, arrow);
+          refreshIcons();
+        }
+      }
+    });
+
+    pasteBtn.addEventListener("click", async () => {
+      try {
+        if (!navigator.clipboard?.readText) {
+          throw new Error("Clipboard tidak tersedia.");
+        }
+
+        const clipboardText = await navigator.clipboard.readText();
+        urlInput.value = clipboardText.trim();
+        urlInput.focus();
+        hideStatus();
+      } catch {
+        urlInput.focus();
+        showStatus(
+          "Clipboard tidak dapat diakses. Tempel link secara manual.",
+          "error"
+        );
+      }
+    });
+
+    urlInput.addEventListener("input", hideStatus);
+
+    refreshIcons();
+  </script>
+</body>
+</html>
